@@ -1,10 +1,10 @@
 package com.gojek.casestudy.network.repository
 
-import com.gojek.casestudy.model.Repository
+import com.gojek.casestudy.model.GitHubRepository
 
 interface Repository {
-    suspend fun getCachedRepositories(): List<Repository>
-    suspend fun getRemoteRepositories(): List<Repository>
-    suspend fun sortByNames(repositories: List<Repository>): List<Repository>
-    suspend fun sortByStars(repositories: List<Repository>): List<Repository>
+    suspend fun getCachedRepositories(): List<GitHubRepository>
+    suspend fun getRemoteRepositories(): List<GitHubRepository>
+    suspend fun sortByNames(gitHubRepositories: List<GitHubRepository>): List<GitHubRepository>
+    suspend fun sortByStars(gitHubRepositories: List<GitHubRepository>): List<GitHubRepository>
 }

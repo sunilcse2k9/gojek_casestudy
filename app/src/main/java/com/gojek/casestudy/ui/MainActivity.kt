@@ -4,23 +4,22 @@ import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.gojek.casestudy.model.Repository
+import com.gojek.casestudy.R
+import com.gojek.casestudy.model.GitHubRepository
 import com.gojek.casestudy.model.Resource
 import com.gojek.casestudy.network.ApiClient
 import com.gojek.casestudy.network.repository.DataRepository
 import com.gojek.casestudy.network.repository.SortingLogic
 import com.gojek.casestudy.util.Utils
-import com.target.casestudy.R
 import com.gojek.casestudy.viewmodel.DataViewModel
 import com.gojek.casestudy.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-  private var repositories = mutableListOf<Repository>()
+  private var repositories = mutableListOf<GitHubRepository>()
   private val viewModel: DataViewModel by lazy {
     ViewModelProvider(
       this,
@@ -37,7 +36,9 @@ class MainActivity : AppCompatActivity() {
 
     viewModel.loadData(Utils.isInternetConnected(this))
 
-    viewModel.resource.observe(this, Observer {
+    viewModel.resource.observe(this, {
+      pull_refresh.isRefreshing = false
+
       when(it) {
         is Resource.Success -> {
           repositories.clear()
@@ -83,6 +84,11 @@ class MainActivity : AppCompatActivity() {
       }
 
       popupMenu.show()
+    }
+
+    pull_refresh.setOnRefreshListener {
+      pull_refresh.isRefreshing = true
+      viewModel.loadData(Utils.isInternetConnected(this))
     }
   }
 }

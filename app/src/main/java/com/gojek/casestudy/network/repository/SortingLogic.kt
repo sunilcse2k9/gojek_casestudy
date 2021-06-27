@@ -1,8 +1,8 @@
 package com.gojek.casestudy.network.repository
 
-import com.gojek.casestudy.model.Repository
+import com.gojek.casestudy.model.GitHubRepository
 
 class SortingLogic {
-    fun sortByNames(repositories: List<Repository>) = repositories.sortedBy { it.name }
-    fun sortByStars(repositories: List<Repository>) = repositories.sortedBy { it.watchersCount }
+    fun sortByNames(gitHubRepositories: List<GitHubRepository>) = gitHubRepositories.sortedBy { it.name }
+    fun sortByStars(gitHubRepositories: List<GitHubRepository>) = gitHubRepositories.sortedBy { it.watchersCount }
 }

@@ -1,11 +1,12 @@
 package com.gojek.casestudy.network.repository
 
 import android.content.Context
-import com.gojek.casestudy.model.Repository
+import com.gojek.casestudy.model.GitHubRepository
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import java.util.*
 
 class DataRepository(
@@ -13,7 +14,7 @@ class DataRepository(
     private val expiryTimeInMins: Int,
     private val api: NetworkApi,
     private val sortingLogic: SortingLogic
-): com.gojek.casestudy.network.repository.Repository {
+): Repository {
 
     companion object {
         private const val PACKAGE_NAME = "com.gojek.casestudy"
@@ -24,32 +25,37 @@ class DataRepository(
     private val sharedPreferences = context.getSharedPreferences(PACKAGE_NAME, Context.MODE_PRIVATE)
     private val gson = Gson()
 
-    override suspend fun getCachedRepositories(): List<Repository> {
+    override suspend fun getCachedRepositories(): List<GitHubRepository> {
         val ts = sharedPreferences.getLong(KEY_TIME_STAMP, 0)
 
-        if (ts == 0L) {
-            return arrayListOf()
+        return if (ts == 0L) {
+            arrayListOf()
         } else {
             val json = sharedPreferences.getString(KEY_REPOSITORIES, "[]")
-            val type = object : TypeToken<List<Repository>>() {}.type
-            return gson.fromJson(json, type)
+            val type = object : TypeToken<List<GitHubRepository>>() {}.type
+            gson.fromJson(json, type)
         }
     }
 
-    override suspend fun getRemoteRepositories(): List<Repository> =
-        withContext(Dispatchers.IO) {
-            val repositories = api.getRepositoriesList()
-            updateCache(repositories)
-            repositories
+    override suspend fun getRemoteRepositories(): List<GitHubRepository> {
+        return try {
+            withContext(Dispatchers.IO) {
+                val repositories = api.getRepositoriesList()
+                updateCache(repositories)
+                repositories
+            }
+        } catch (e: Exception) {
+            listOf()
         }
+    }
 
-    private fun updateCache(repositories: List<Repository>) {
-        if (repositories.isNotEmpty()) {
+    private fun updateCache(gitHubRepositories: List<GitHubRepository>) {
+        if (gitHubRepositories.isNotEmpty()) {
             val ts = sharedPreferences.getLong(KEY_TIME_STAMP, 0)
             val ct = Calendar.getInstance().timeInMillis
 
             if (ct - ts >= expiryTimeInMins*60*1000) {
-                sharedPreferences.edit().putString(KEY_REPOSITORIES, gson.toJson(repositories))
+                sharedPreferences.edit().putString(KEY_REPOSITORIES, gson.toJson(gitHubRepositories))
                     .apply()
                 sharedPreferences.edit()
                     .putLong(KEY_TIME_STAMP, Calendar.getInstance().timeInMillis)
@@ -58,7 +64,6 @@ class DataRepository(
         }
     }
 
-    override suspend fun sortByNames(repositories: List<Repository>): List<Repository> = withContext(Dispatchers.IO) { sortingLogic.sortByNames(repositories) }
-
-    override suspend fun sortByStars(repositories: List<Repository>): List<Repository> = withContext(Dispatchers.IO) { sortingLogic.sortByStars(repositories) }
+    override suspend fun sortByNames(gitHubRepositories: List<GitHubRepository>): List<GitHubRepository> = withContext(Dispatchers.IO) { sortingLogic.sortByNames(gitHubRepositories) }
+    override suspend fun sortByStars(gitHubRepositories: List<GitHubRepository>): List<GitHubRepository> = withContext(Dispatchers.IO) { sortingLogic.sortByStars(gitHubRepositories) }
 }

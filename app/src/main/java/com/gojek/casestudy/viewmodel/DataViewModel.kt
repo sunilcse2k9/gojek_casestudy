@@ -3,7 +3,7 @@ package com.gojek.casestudy.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gojek.casestudy.model.Repository
+import com.gojek.casestudy.model.GitHubRepository
 import com.gojek.casestudy.model.Resource
 import com.gojek.casestudy.network.repository.DataRepository
 import kotlinx.coroutines.Dispatchers
@@ -46,15 +46,15 @@ class DataViewModel(private val repository: DataRepository) : ViewModel() {
         }
     }
 
-    fun sortByNames(repositories: List<Repository>) {
+    fun sortByNames(gitHubRepositories: List<GitHubRepository>) {
         viewModelScope.launch {
-            resource.value = Resource.Success(repository.sortByNames(repositories))
+            resource.value = Resource.Success(repository.sortByNames(gitHubRepositories))
         }
     }
 
-    fun sortByStars(repositories: List<Repository>) {
+    fun sortByStars(gitHubRepositories: List<GitHubRepository>) {
         viewModelScope.launch {
-            resource.value = Resource.Success(repository.sortByStars(repositories))
+            resource.value = Resource.Success(repository.sortByStars(gitHubRepositories))
         }
     }
 }
