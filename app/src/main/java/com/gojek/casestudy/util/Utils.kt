@@ -1,11 +1,19 @@
 package com.gojek.casestudy.util
 
 import android.content.Context
+import android.content.res.Resources
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 
 object Utils {
+
+    fun convertDpToPixel(context: Context, dp: Float): Float {
+        val resources: Resources = context.resources
+        val metrics = resources.displayMetrics
+        return dp * (metrics.densityDpi / 160f)
+    }
+
     fun isInternetConnected(context: Context): Boolean {
         var result = false
         val connectivityManager =

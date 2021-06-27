@@ -4,10 +4,10 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.gojek.casestudy.network.repository.NetworkRepository
+import com.gojek.casestudy.network.repository.DataRepository
 
 
-class ViewModelFactory(private val repository: NetworkRepository) : ViewModelProvider.Factory {
+class ViewModelFactory(private val repository: DataRepository) : ViewModelProvider.Factory {
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {

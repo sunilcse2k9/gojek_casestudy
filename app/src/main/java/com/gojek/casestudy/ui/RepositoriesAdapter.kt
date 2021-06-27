@@ -9,9 +9,9 @@ import com.gojek.casestudy.util.ImageLoader
 import com.target.casestudy.R
 import kotlinx.android.synthetic.main.repository_list_item.view.*
 
-class RepositoriesAdapter(val repositories: List<Repository>): RecyclerView.Adapter<RepositoriesAdapter.ViewHolder>() {
+class RepositoriesAdapter(private val repositories: List<Repository>): RecyclerView.Adapter<RepositoriesAdapter.ViewHolder>() {
 
-    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
+    private var itemSelected = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.repository_list_item, parent, false))
@@ -26,9 +26,36 @@ class RepositoriesAdapter(val repositories: List<Repository>): RecyclerView.Adap
         holder.itemView.tv_fork.text = repositories[position].forksCount.toString()
 
         ImageLoader.loadImage(holder.itemView.iv_avatar, repositories[position].owner.avatarUrl)
+
+        if (repositories[position].itemSelected)
+            holder.itemView.layer_expanded.visibility = View.VISIBLE
+        else
+            holder.itemView.layer_expanded.visibility = View.GONE
+
+        holder.itemView.setOnClickListener {
+            //Same item clicked again
+            if (itemSelected == position) {
+                repositories[itemSelected].itemSelected = false
+                notifyItemChanged(itemSelected)
+                itemSelected = -1
+            } else {
+                //Reset previously selected item
+                if (itemSelected >= 0) {
+                    repositories[itemSelected].itemSelected = false
+                    notifyItemChanged(itemSelected)
+                }
+
+                //Select  new item
+                itemSelected = position
+                repositories[position].itemSelected = true
+                notifyItemChanged(position)
+            }
+        }
     }
 
     override fun getItemCount(): Int {
         return repositories.count()
     }
+
+    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 }

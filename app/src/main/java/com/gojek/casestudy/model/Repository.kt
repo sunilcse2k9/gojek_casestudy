@@ -20,6 +20,8 @@ data class Repository(
 	@SerializedName("forks_count")
 	val forksCount: Int
 ): Parcelable {
+	var itemSelected: Boolean = false
+
 	@Parcelize
 	data class Owner(
 		@SerializedName("avatar_url")

@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="colorPrimary">@color/red_color</color>
-  <color name="colorPrimaryDark">#AA0000</color>
-  <color name="colorAccent">#008300</color>
+  <color name="colorPrimary">#72a94b</color>
+  <color name="colorPrimaryDark">#546C03</color>
+  <color name="colorAccent">#72a94b</color>
 
   <color name="gray_color">#666666</color>
   <color name="red_color">#cc0000</color>
   <color name="lightGrey">#7f7f7f</color>
   <color name="black">#000000</color>
+  <color name="white">#ffffff</color>
   <color name="little_transparent">#10000000</color>
 
   <color name="color_52575C">#52575C</color>
+  <color name="color_d8d8d8">#d8d8d8</color>
+  <color name="color_31B057">#31B057</color>
+  <color name="color_4A4A4A">#4A4A4A</color>
+  <color name="color_929292">#929292</color>
 </resources>

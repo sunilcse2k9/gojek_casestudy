@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/list_item_selector"
     android:padding="16dp">
     <ImageView
         android:id="@+id/iv_avatar"
@@ -39,8 +40,9 @@
         android:id="@+id/layer_expanded"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="tv_fork, tv_language, tv_watcher"
-        tools:ignore="MissingConstraints"/>
+        app:constraint_referenced_ids="tv_fork, tv_language, tv_watcher, tv_html"
+        tools:ignore="MissingConstraints"
+        android:visibility="gone"/>
     <TextView
         android:id="@+id/tv_html"
         android:layout_width="wrap_content"
