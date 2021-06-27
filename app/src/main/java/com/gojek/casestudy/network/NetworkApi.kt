@@ -1,4 +1,4 @@
-package com.gojek.casestudy.network.repository
+package com.gojek.casestudy.network
 
 import com.gojek.casestudy.model.GitHubRepository
 import retrofit2.http.GET

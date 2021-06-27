@@ -1,4 +1,4 @@
-package com.gojek.casestudy.network.repository
+package com.gojek.casestudy.repository
 
 import com.gojek.casestudy.model.GitHubRepository
 

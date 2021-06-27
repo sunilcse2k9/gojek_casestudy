@@ -1,7 +1,8 @@
-package com.gojek.casestudy.network.repository
+package com.gojek.casestudy.repository
 
 import android.content.Context
 import com.gojek.casestudy.model.GitHubRepository
+import com.gojek.casestudy.network.NetworkApi
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
@@ -17,27 +18,36 @@ class DataRepository(
 ): Repository {
 
     companion object {
-        private const val PACKAGE_NAME = "com.gojek.casestudy"
+        const val PACKAGE_NAME = "com.gojek.casestudy"
         private const val KEY_REPOSITORIES = "repositories"
         private const val KEY_TIME_STAMP = "time_stamp"
     }
 
     private val sharedPreferences = context.getSharedPreferences(PACKAGE_NAME, Context.MODE_PRIVATE)
     private val gson = Gson()
-
-    override suspend fun getCachedRepositories(): List<GitHubRepository> {
-        val ts = sharedPreferences.getLong(KEY_TIME_STAMP, 0)
-
-        return if (ts == 0L) {
-            arrayListOf()
+    override suspend fun getRepositories(isInternetConnected: Boolean): List<GitHubRepository> {
+        return if (isInternetConnected) {
+            getRemoteRepositories()
         } else {
-            val json = sharedPreferences.getString(KEY_REPOSITORIES, "[]")
-            val type = object : TypeToken<List<GitHubRepository>>() {}.type
-            gson.fromJson(json, type)
+            getCachedRepositories()
         }
     }
 
-    override suspend fun getRemoteRepositories(): List<GitHubRepository> {
+    private suspend fun getCachedRepositories(): List<GitHubRepository> {
+        return withContext(Dispatchers.IO) {
+            val ts = sharedPreferences.getLong(KEY_TIME_STAMP, 0)
+
+            if (ts == 0L) {
+                arrayListOf<GitHubRepository>()
+            } else {
+                val json = sharedPreferences.getString(KEY_REPOSITORIES, "[]")
+                val type = object : TypeToken<List<GitHubRepository>>() {}.type
+                gson.fromJson(json, type)
+            }
+        }
+    }
+
+    private suspend fun getRemoteRepositories(): List<GitHubRepository> {
         return try {
             withContext(Dispatchers.IO) {
                 val repositories = api.getRepositoriesList()

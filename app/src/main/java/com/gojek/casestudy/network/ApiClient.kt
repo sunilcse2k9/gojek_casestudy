@@ -1,7 +1,6 @@
 package com.gojek.casestudy.network
 
 
-import com.gojek.casestudy.network.repository.NetworkApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
